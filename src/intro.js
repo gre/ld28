@@ -24,11 +24,11 @@ function intro () {
   dom.$game.innerHTML = "";
   dom.$game.appendChild(el);
   return Zanimo.transform(el, "translate(0, -100px) scale(0.5)")
-    .then(Zanimo.transitionf("transform", "translate(0, 100px) scale(1)", 1000, "ease-out"))
+    .then(Zanimo.transitionf("transform", "translate(0, 100px) scale(1)", 200, "ease-out"))
     .then(_.partial(waitNextClick, btn))
     .then(_.partial(dom.opacity, btn, 0))
     .thenResolve(el)
-    .then(Zanimo.transitionf("transform", "translate(0, -100px) scale(0.5)", 500, "ease-out"))
+    .then(Zanimo.transitionf("transform", "translate(0, -140px) scale(0.5)", 500, "ease-out"))
     .then(_.partial(dom.opacity, dom.$title, 1))
     .then(_.partial(dom.opacity, dom.$validate, 1))
     .then(_.partial(dom.hide, el));

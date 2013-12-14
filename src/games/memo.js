@@ -10,7 +10,7 @@ var MARGIN = 16;
 function getRandomColor () {
   return "hsl("+
     Math.floor(255*Math.random())+
-    ", 50%, 50%)";
+    ", 60%, 60%)";
 }
 
 function Card (x, y, w, h, number) {
@@ -186,10 +186,10 @@ Memo.prototype = {
 };
 
 Memo.createForDifficulty = function (difficulty) {
-  var s = 3 + 6 * difficulty * difficulty;
+  var s = 3 + 7 * difficulty * difficulty;
   var w = Math.round(s);
   var h = Math.round(s * 2/3);
-  var numberOfCards = Math.max(1, Math.floor(w*h*smoothstep(0, 2, difficulty)));
+  var numberOfCards = Math.floor(1+w*h*smoothstep(0, 4, 1-Math.pow(1-difficulty, 1.5)));
   var invisibilityAfter = 2000 + 3000*smoothstep(0, 1, difficulty);
   return new Memo(w, h, numberOfCards, invisibilityAfter);
 };
