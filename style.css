@@ -1,0 +1,62 @@
+
+body, html {
+  background: #eee;
+  font-size: 20px;
+  font-family: 'Changa One', cursive;
+}
+
+header {
+  text-align: center;
+}
+footer {
+  margin-top: 10px;
+  padding-top: 10px;
+  text-align: right;
+  font-size: 0.6em;
+}
+footer a {
+  color: #000;
+}
+
+#title {
+  font-size: 1.4em;
+}
+#title em {
+  opacity: 0.2;
+  font-style: normal;
+}
+#title em:before {
+  content: "(";
+}
+#title em:after {
+  content: ")";
+}
+
+#container {
+  margin: 0 auto;
+  min-width: 400px;
+  max-width: 600px;
+}
+
+#game {
+  width: 100%;
+  min-height: 400px;
+  max-height: 400px;
+}
+
+#actions {
+  text-align: center;
+}
+
+#validate {
+  font-size: 2em;
+  font-weight: bold;
+  padding: 0.1em 0.4em;
+  background: #2C2;
+  color: #FFF;
+  border: none;
+  border-radius: 1em;
+}
+#validate:focus {
+  outline: none;
+}
