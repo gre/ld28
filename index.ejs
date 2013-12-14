@@ -9,13 +9,28 @@
 <body>
 
   <header>
-    <h1 id="title">You <em>Must</em> Only Get One</h1>
+    <h1 class="title">You <em>Must</em> Only Get One</h1>
   </header>
 
   <div id="container">
-    <div id="game"></div>
+    <div id="stats">
+      <div id="score">
+        0000000000000000
+      </div>
+      <div id="timebar">
+        <div id="time"></div>
+      </div>
+    </div>
+    <div id="game">
+      <div id="loading">
+        <progress></progress>
+        <div>
+          Loading...
+        </div>
+      </div>
+    </div>
     <div id="actions">
-      <button id="validate">✓ Ok</button>
+      <button id="validate" style="opacity:0">✓ Ok</button>
     </div>
   </div>
 

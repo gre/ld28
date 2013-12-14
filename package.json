@@ -20,9 +20,11 @@
   "dependencies": {
     "lodash": "2.4.1",
     "q": "0.9.7",
+    "qanimationframe": "1.0.x",
     "qstart": "0.0.4",
     "qimage": "1.0.1",
-    "zanimo": "0.0.9"
+    "zanimo": "0.0.9",
+    "smoothstep": "1.0.0"
   },
   "devDependencies": {
     "grunt": "~0.4.1",
