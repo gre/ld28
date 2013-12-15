@@ -296,7 +296,7 @@ Cats.prototype = {
     var animations = _.map(this.houses, function (catHouse) {
       var success = catHouse.nbAtTheEnd===1;
       var animateY, animateSpeed;
-      var catY = 110;
+      var catY = 120;
       if (!success) {
         catHouse.btn.innerHTML = "✘";
         catHouse.btn.setAttribute("disabled", "disabled");
