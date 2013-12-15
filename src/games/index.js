@@ -1,8 +1,6 @@
 
 module.exports = [
-/*
   require("./memo"),
-  require("./cats")
-  */
+  require("./cats"),
   require("./calculation")
 ];
