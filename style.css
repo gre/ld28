@@ -5,6 +5,7 @@ body, html {
   font-family: 'Changa One', cursive;
   padding: 0;
   margin: 0;
+  overflow: hidden;
 }
 
 h1, h2, h3 {

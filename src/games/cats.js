@@ -267,16 +267,20 @@ Cats.prototype = {
   enter: function (container) {
     container.innerHTML = "";
     container.appendChild(this.el);
-    var runs = _.map(this.houses, function (house) {
-      return house.runMoves();
-    });
-    return Q.all(runs)
-      .then(_.bind(function () {
-        _.each(this.houses, function (house) {
+    var houses = this.houses;
+    return Q()
+      .delay(1000)
+      .then(function(){
+        return Q.all(_.map(houses, function (house) {
+          return house.runMoves();
+        }));
+      })
+      .then(function () {
+        _.each(houses, function (house) {
           house.drawHouse(0);
           dom.show(house.btns);
         });
-      }, this));
+      });
   },
 
   submit: function () {

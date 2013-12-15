@@ -15,8 +15,8 @@ var smoothstep = require("smoothstep");
 var never = Q.defer().promise;
 
 function start () {
-  return Q(2)
-    //.then(intro)
+  return Q()
+    .then(intro)
     .then(_.partial(runMiniGames, 10))
     .then(outro);
 }
