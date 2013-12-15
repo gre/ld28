@@ -69,15 +69,18 @@ function CatHouse (x, width, speed, sequenceIn, sequenceOut, nbAtTheEnd) {
   this.totalCatsEntered = 0;
   this.totalCatsLeaved = 0;
   this.color = Math.floor(255*Math.random());
-  this.drawHouse(false);
+  this.drawHouse(0);
 }
 
 CatHouse.prototype = {
   drawHouse: function (lighted) {
+    lighted = Math.min(7, lighted);
     var c = this.ctx;
     c.clearRect(0,0,c.canvas.width,c.canvas.height);
     c.save();
     c.scale(c.canvas.width, c.canvas.height);
+    c.fillStyle = "hsl("+this.color+", 20%, 30%)";
+    c.fillRect(0.2, 0.15, 0.05, 0.2);
     c.fillStyle = "hsl("+this.color+", 20%, 50%)";
     c.moveTo(0.5, 0);
     c.beginPath();
@@ -89,12 +92,12 @@ CatHouse.prototype = {
     c.lineTo(0, 0.5);
     c.lineTo(0.5, 0);
     c.fill();
-    c.fillStyle = "rgb(20,0,0)";
-    c.fillRect(0.75, 0.2, 0.05, 0.15);
     c.fillStyle = lighted & 1 ? "hsl(50, 80%, 80%)" : "rgba(0,0,0,0.1)";
-    c.fillRect(0.3, 0.3, 0.1, 0.1);
+    c.fillRect(0.55, 0.65, 0.2, 0.35);
     c.fillStyle = lighted & 2 ? "hsl(50, 80%, 80%)" : "rgba(0,0,0,0.1)";
-    c.fillRect(0.5, 0.6, 0.2, 0.2);
+    c.fillRect(0.25, 0.5, 0.2, 0.2);
+    c.fillStyle = lighted & 4 ? "hsl(50, 80%, 80%)" : "rgba(0,0,0,0.1)";
+    c.fillRect(0.6, 0.3, 0.1, 0.1);
     c.restore();
   },
   addCat: function () {
@@ -119,7 +122,7 @@ CatHouse.prototype = {
     if (this.cats.length===0) return;
     var cat = this.cats.splice(0,1)[0];
     ++this.totalCatsLeaved;
-    this.drawHouse(Math.min(3, this.totalCatsEntered));
+    this.drawHouse(this.totalCatsEntered);
     return cat.move(0, dimensions.height, this.speed)
       .then(function(){
         return cat.fadeOut(100);
@@ -282,39 +285,48 @@ Cats.prototype = {
 
   leave: function () {
     this.leaving = true;
+    var houseSpeed = 1000;
+    var catSpeed = 500;
+    var catY = Math.round(dimensions.height * 0.6);
     var animateHouse = function (house, y, moveDuration) {
-      return Zanimo.transition(house, "transform", "translateY("+y+"px)", moveDuration, "ease-out");
+      return Zanimo.transition(house, "transform", "translateY("+y+"px)", moveDuration, "linear");
     };
     var animateCats = function (cats, width, y, duration) {
       if (cats.length === 0) return Q();
       var portion = 1/cats.length;
       return Q.all(_.map(cats, function (cat, i) {
-        var x = (0.5+i)*portion*width - width/2;
+        var x = Math.round((0.5+i)*portion*width - width/2);
         return cat.move(x, y, duration);
       }));
     };
     var animations = _.map(this.houses, function (catHouse) {
       var success = catHouse.nbAtTheEnd===1;
-      var animateY, animateSpeed;
-      var catY = 120;
       if (!success) {
         catHouse.btn.innerHTML = "✘";
         catHouse.btn.setAttribute("disabled", "disabled");
-        animateY = -20;
-        animateSpeed = 300;
+        return Q.delay(1000)
+          .then(function(){
+            return Q.all([
+              animateHouse(catHouse.house, -Math.round(0.9*catHouse.house.height), houseSpeed),
+              animateCats(catHouse.cats, catHouse.width/2, catY, catSpeed)
+            ]);
+          });
       }
       else {
         catHouse.btn.innerHTML = "✓";
-        animateY = -40;
-        animateSpeed = 600;
+        catHouse.drawHouse(999);
+        var cat = catHouse.cats[0];
+        var x = Math.round(0.2*catHouse.house.width);
+        return cat.move(x, dimensions.height / 2, catSpeed)
+          .delay(50)
+          .then(function(){
+            cat.el.style.zIndex = 3;
+            return cat.move(x, catY, catSpeed);
+          });
       }
-      return Q.all([
-        animateHouse(catHouse.house, animateY, animateSpeed),
-        animateCats(catHouse.cats, catY, catHouse.width, 500)
-      ]);
     });
 
-    return Q.all(animations).delay(300);
+    return Q.all(animations).delay(1000);
   }
 };
 

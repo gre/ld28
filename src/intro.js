@@ -38,16 +38,21 @@ function intro () {
   var mode;
   return Zanimo.transform(el, "translate(0, -100px) scale(0.5)")
     .then(Zanimo.transitionf("transform", "translate(0, 100px) scale(1)", 200, "ease-out"))
-    .then(_.partial(waitNextClick, btns))
+    .then(function(){
+      return Q.race(_.map(btns.children, waitNextClick));
+    })
     .then(function (target) {
       mode = _.indexOf(btns.children, target);
     })
     .then(_.partial(dom.opacity, btns, 0))
     .thenResolve(el)
-    .then(Zanimo.transitionf("transform", "translate(0, -100px) scale(0.5)", 500, "ease-out"))
+    .then(Zanimo.transitionf("transform", "translate(0, -105px) scale(0.5)", 500, "ease-out"))
     .then(_.partial(dom.opacity, dom.$title, 1))
     .then(_.partial(dom.opacity, dom.$cancel, 1))
     .then(_.partial(dom.hide, el))
+    .delay(50)
+    .thenResolve(dom.$title)
+    .then(Zanimo.transitionf("opacity", 0.2, 300, "ease-out"))
     .then(function(){
       return mode;
     });
