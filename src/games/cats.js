@@ -254,7 +254,7 @@ function Cats (nb, speed, seqlength) {
   }))
   .then(function (catHouse) {
     var success = catHouse.nbAtTheEnd===1;
-    return success ? 2*seqlength*nb : 0;
+    return success ? 20+3*seqlength*nb : 0;
   });
 }
 
