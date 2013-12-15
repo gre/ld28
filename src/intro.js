@@ -32,7 +32,6 @@ el.appendChild(btns);
 function intro () {
   dom.$help.innerHTML = "";
   dom.opacity(dom.$title, 0);
-  dom.opacity(dom.$cancel, 0);
   dom.$game.innerHTML = "";
   dom.$game.appendChild(el);
   var mode;
@@ -48,7 +47,6 @@ function intro () {
     .thenResolve(el)
     .then(Zanimo.transitionf("transform", "translate(0, -105px) scale(0.5)", 500, "ease-out"))
     .then(_.partial(dom.opacity, dom.$title, 1))
-    .then(_.partial(dom.opacity, dom.$cancel, 1))
     .then(_.partial(dom.hide, el))
     .delay(50)
     .thenResolve(dom.$title)

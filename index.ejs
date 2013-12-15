@@ -31,23 +31,30 @@
         </div>
       </div>
     </div>
-
-    <div id="buttons" style="display:none">
-      <button id="cancel" class="red" style="opacity:0">✘ Skip</button>
-    </div>
   </div>
 
   <footer>
+    <a href="./#nomusic" style="float: right; margin-right: 10px">♬ stop the music !</a>
     <a href="http://twitter.com/greweb">@greweb</a>
     - 2013
     - <a href="http://ludumdare.com/compo/">LD#28</a>
     - <a href="http://github.com/gre/ld28">github</a>
   </footer>
 
-  <audio id="music" autoplay loop volume=0.2>
-    <source src="./assets/ld28.ogg"></source>
-    <source src="./assets/ld28.mp3"></source>
+  <audio id="music" autoplay muted loop>
+    <source src="./assets/ld28.ogg" type="audio/ogg"></source>
+    <source src="./assets/ld28.mp3" type="audio/mpeg"></source>
   </audio>
+  <script type="text/javascript">(function(){
+    var music = document.getElementById("music");
+    function onhashchange () {
+      var on = location.hash.indexOf("nomusic") === -1;
+      music.muted = !on;
+    }
+    onhashchange();
+    window.onhashchange = onhashchange;
+  }());
+  </script>
 
   <script src="app.js"></script>
 </body>

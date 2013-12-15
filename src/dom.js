@@ -13,6 +13,5 @@ module.exports = {
   $game: document.getElementById("game"),
   $title: document.querySelector("header > .title"),
   $score: document.getElementById("score"),
-  $cancel: document.getElementById("cancel"),
   $help: document.getElementById("help")
 };

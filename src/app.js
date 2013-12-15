@@ -64,7 +64,7 @@ function nextMiniGame (difficulty, totalScore) {
           .progress(function (score) {
             stats.setScore(totalScore+score);
           }),
-        timeoutWithTicks(Q.race([gameEnd, waitNextCancel()]), timeout)
+        timeoutWithTicks(gameEnd, timeout)
           .progress(stats.setTimeProgress)
           .then(_.bind(game.submit, game))
       ]);
@@ -73,10 +73,6 @@ function nextMiniGame (difficulty, totalScore) {
     .then(function (score) {
       return Q.fcall(_.bind(game.leave, game)).thenResolve(score);
     });
-}
-
-function waitNextCancel () {
-  return waitNextClick(dom.$cancel);
 }
 
 Q.all([

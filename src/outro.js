@@ -17,7 +17,6 @@ $score.className = "score";
 $el.appendChild($score);
 
 function outro (score) {
-  dom.opacity(dom.$cancel, 0);
   dom.$help.innerHTML = "";
   dom.$game.innerHTML = "";
   dom.$game.appendChild($el);

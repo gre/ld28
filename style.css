@@ -224,6 +224,8 @@ button.hard {
   text-align: center;
   font-size: 1em;
   line-height: 1.6em;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
   box-sizing: border-box;
   user-select: none;
   -moz-user-select: none;
@@ -276,6 +278,8 @@ button.hard {
   user-select: none;
   -webkit-user-select: none;
   -moz-user-select: none;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
   box-sizing: border-box;
 }
 .g-calculation .bull .item.selected {
