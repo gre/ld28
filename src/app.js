@@ -9,25 +9,31 @@ var intro = require("./intro");
 var outro = require("./outro");
 var timeoutWithTicks = require("./timeoutWithTicks");
 var stats = require("./stats.js");
+var mix = require("./mix");
+var smoothstep = require("smoothstep");
 
 var never = Q.defer().promise;
 
 function start () {
   return Q()
     .then(intro)
-    .then(_.partial(runMiniGames, 10, 0))
+    .then(_.partial(runMiniGames, 10))
     .then(outro);
 }
 
-function runMiniGames (nb, totalScore) {
-  if (nb <= 0) return totalScore;
-  stats.setTimeProgress(1);
-  stats.setScore(totalScore);
-  var difficulty = (10-nb) / 10;
-  return Q.fcall(nextMiniGame, difficulty, totalScore)
-    .then(function (score) {
-      return runMiniGames(nb-1, totalScore+score);
-    });
+function runMiniGames (total, mode) {
+  var minDifficulty = mix(0, 0.5, smoothstep(0, 2, mode));
+  var maxDifficulty = mix(0.5, 1, smoothstep(0, 2, mode));
+  return (function runMiniGames (nb, totalScore) {
+    if (nb <= 0) return totalScore;
+    stats.setTimeProgress(1);
+    stats.setScore(totalScore);
+    var difficulty = mix(minDifficulty, maxDifficulty, smoothstep(total, 0, nb));
+    return Q.fcall(nextMiniGame, difficulty, totalScore)
+      .then(function (score) {
+        return runMiniGames(nb-1, totalScore+score);
+      });
+  }(total, 0));
 }
 
 function gameSuccess (score) {
@@ -50,13 +56,8 @@ function nextMiniGame (difficulty, totalScore) {
 
   dom.$help.innerHTML = game.message || "";
 
-  return Q()
-    .then(function(){
-      return Q.race([
-        Q.fcall(_.bind(game.enter, game), dom.$game),
-        waitNextCancel().then(function(e){ return Q.reject(new Error("cancelled")); })
-      ]);
-    })
+  return Q(dom.$game)
+    .then(_.bind(game.enter, game))
     .then(function () {
       return Q.race([
         gameEnd
@@ -83,5 +84,7 @@ Q.all([
   Q.all(_.map(Games, function (G) { return G.loaded || Q(); }))
 ]).delay(200).then(start).done();
 
+/*
 window.Q = Q;
 window._ = _;
+*/

@@ -13,10 +13,21 @@ title.className = 'title';
 title.innerHTML = dom.$title.innerHTML;
 el.appendChild(title);
 
-var btn = document.createElement('button');
-btn.className = 'start';
-btn.innerHTML = 'Start';
-el.appendChild(btn);
+var btns = document.createElement("div");
+btns.className = "menu";
+var easy = document.createElement('button');
+easy.className = 'start easy';
+easy.innerHTML = 'Easy';
+btns.appendChild(easy);
+var medium = document.createElement('button');
+medium.className = 'start medium';
+medium.innerHTML = 'Medium';
+btns.appendChild(medium);
+var hard = document.createElement('button');
+hard.className = 'start hard';
+hard.innerHTML = 'Hard';
+btns.appendChild(hard);
+el.appendChild(btns);
 
 function intro () {
   dom.$help.innerHTML = "";
@@ -24,15 +35,22 @@ function intro () {
   dom.opacity(dom.$cancel, 0);
   dom.$game.innerHTML = "";
   dom.$game.appendChild(el);
+  var mode;
   return Zanimo.transform(el, "translate(0, -100px) scale(0.5)")
     .then(Zanimo.transitionf("transform", "translate(0, 100px) scale(1)", 200, "ease-out"))
-    .then(_.partial(waitNextClick, btn))
-    .then(_.partial(dom.opacity, btn, 0))
+    .then(_.partial(waitNextClick, btns))
+    .then(function (target) {
+      mode = _.indexOf(btns.children, target);
+    })
+    .then(_.partial(dom.opacity, btns, 0))
     .thenResolve(el)
     .then(Zanimo.transitionf("transform", "translate(0, -100px) scale(0.5)", 500, "ease-out"))
     .then(_.partial(dom.opacity, dom.$title, 1))
     .then(_.partial(dom.opacity, dom.$cancel, 1))
-    .then(_.partial(dom.hide, el));
+    .then(_.partial(dom.hide, el))
+    .then(function(){
+      return mode;
+    });
 
 }
 

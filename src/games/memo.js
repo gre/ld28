@@ -1,5 +1,6 @@
 var Zanimo = require("zanimo");
 var _ = require("lodash");
+var Q = require("q");
 
 var dom = require("../dom");
 var smoothstep = require("smoothstep");

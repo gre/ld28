@@ -26,8 +26,8 @@ Cat.prototype = {
     var c = this.ctx;
     c.drawImage(img, 0, 0, c.canvas.width, c.canvas.height);
   },
-  moveY: function (y, duration) {
-    return Zanimo.transition(this.el, "transform", "translateY("+y+"px)", duration||0);
+  move: function (x, y, duration) {
+    return Zanimo.transition(this.el, "transform", "translate("+x+"px,"+y+"px)", duration||0);
   },
   fadeIn: function (s) {
     return Zanimo.transition(this.el, "opacity", 1, s);
@@ -59,13 +59,17 @@ function CatHouse (x, width, speed, sequenceIn, sequenceOut, nbAtTheEnd) {
   this.el.appendChild(this.house);
   this.btn = document.createElement("button");
   this.btn.className = "submit";
-  this.btn.innerHTML = "✓";
-  dom.hide(this.btn);
-  this.el.appendChild(this.btn);
+  this.btn.innerHTML = "This One!";
+  this.btns = document.createElement("div");
+  this.btns.className = "buttons";
+  this.btns.appendChild(this.btn);
+  dom.hide(this.btns);
+  this.el.appendChild(this.btns);
   this.cats = [];
-  this.drawHouse(false);
   this.totalCatsEntered = 0;
   this.totalCatsLeaved = 0;
+  this.color = Math.floor(255*Math.random());
+  this.drawHouse(false);
 }
 
 CatHouse.prototype = {
@@ -74,7 +78,7 @@ CatHouse.prototype = {
     c.clearRect(0,0,c.canvas.width,c.canvas.height);
     c.save();
     c.scale(c.canvas.width, c.canvas.height);
-    c.fillStyle = "hsl("+Math.floor(255*Math.random())+", 20%, 50%)";
+    c.fillStyle = "hsl("+this.color+", 20%, 50%)";
     c.moveTo(0.5, 0);
     c.beginPath();
     c.lineTo(1, 0.5);
@@ -98,12 +102,12 @@ CatHouse.prototype = {
     var speed = this.speed;
     var cat = new Cat((this.width-size)/2, size);
     this.el.appendChild(cat.el);
-    return cat.moveY(0)
+    return cat.move(0,0)
       .then(function(){
         return cat.fadeIn(100);
       })
       .then(function(){
-        return cat.moveY(dimensions.height / 2, speed);
+        return cat.move(0,dimensions.height / 2, speed);
       })
       .then(_.bind(function(){
         ++this.totalCatsEntered;
@@ -116,7 +120,7 @@ CatHouse.prototype = {
     var cat = this.cats.splice(0,1)[0];
     ++this.totalCatsLeaved;
     this.drawHouse(Math.min(3, this.totalCatsEntered));
-    return cat.moveY(dimensions.height, this.speed)
+    return cat.move(0, dimensions.height, this.speed)
       .then(function(){
         return cat.fadeOut(100);
       })
@@ -175,8 +179,6 @@ function Cats (nb, speed, seqlength) {
       nbAtTheEnd: nbAtTheEnd
     };
   });
-
-  console.log(housesParams);
 
   /// Now, we have to make sure there is only one house with one cat at the end...
 
@@ -249,10 +251,6 @@ function Cats (nb, speed, seqlength) {
   }))
   .then(function (catHouse) {
     var success = catHouse.nbAtTheEnd===1;
-    if (!success) {
-      catHouse.btn.innerHTML = "✘";
-      catHouse.btn.setAttribute("disabled", "disabled");
-    }
     return success ? 2*seqlength*nb : 0;
   });
 }
@@ -273,7 +271,7 @@ Cats.prototype = {
       .then(_.bind(function () {
         _.each(this.houses, function (house) {
           house.drawHouse(0);
-          dom.show(house.btn);
+          dom.show(house.btns);
         });
       }, this));
   },
@@ -284,13 +282,46 @@ Cats.prototype = {
 
   leave: function () {
     this.leaving = true;
+    var animateHouse = function (house, y, moveDuration) {
+      return Zanimo.transition(house, "transform", "translateY("+y+"px)", moveDuration, "ease-out");
+    };
+    var animateCats = function (cats, width, y, duration) {
+      if (cats.length === 0) return Q();
+      var portion = 1/cats.length;
+      return Q.all(_.map(cats, function (cat, i) {
+        var x = (0.5+i)*portion*width - width/2;
+        return cat.move(x, y, duration);
+      }));
+    };
+    var animations = _.map(this.houses, function (catHouse) {
+      var success = catHouse.nbAtTheEnd===1;
+      var animateY, animateSpeed;
+      var catY = 110;
+      if (!success) {
+        catHouse.btn.innerHTML = "✘";
+        catHouse.btn.setAttribute("disabled", "disabled");
+        animateY = -20;
+        animateSpeed = 300;
+      }
+      else {
+        catHouse.btn.innerHTML = "✓";
+        animateY = -40;
+        animateSpeed = 600;
+      }
+      return Q.all([
+        animateHouse(catHouse.house, animateY, animateSpeed),
+        animateCats(catHouse.cats, catY, catHouse.width, 500)
+      ]);
+    });
+
+    return Q.all(animations).delay(300);
   }
 };
 
 Cats.createForDifficulty = function (difficulty) {
   var nb = 2+Math.round(Math.pow(difficulty, 1.5) * 4);
   var speed = Math.round(500+1000*Math.pow(1-difficulty, 1.2));
-  var seqlength = Math.floor(3 + difficulty * difficulty * 4);
+  var seqlength = Math.floor(2 + difficulty * difficulty * 8);
   return new Cats(nb, speed, seqlength);
 };
 
