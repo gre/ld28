@@ -19,8 +19,9 @@ btn.innerHTML = 'Start';
 el.appendChild(btn);
 
 function intro () {
+  dom.$help.innerHTML = "";
   dom.opacity(dom.$title, 0);
-  dom.opacity(dom.$validate, 0);
+  dom.opacity(dom.$cancel, 0);
   dom.$game.innerHTML = "";
   dom.$game.appendChild(el);
   return Zanimo.transform(el, "translate(0, -100px) scale(0.5)")
@@ -28,9 +29,9 @@ function intro () {
     .then(_.partial(waitNextClick, btn))
     .then(_.partial(dom.opacity, btn, 0))
     .thenResolve(el)
-    .then(Zanimo.transitionf("transform", "translate(0, -140px) scale(0.5)", 500, "ease-out"))
+    .then(Zanimo.transitionf("transform", "translate(0, -100px) scale(0.5)", 500, "ease-out"))
     .then(_.partial(dom.opacity, dom.$title, 1))
-    .then(_.partial(dom.opacity, dom.$validate, 1))
+    .then(_.partial(dom.opacity, dom.$cancel, 1))
     .then(_.partial(dom.hide, el));
 
 }

@@ -35,7 +35,7 @@ function gameSuccess (score) {
 }
 
 function gameFailure (e) {
-  if (e.message !== "timeout") {
+  if (e.message !== "timeout" && e.message !== "cancelled") {
     console.log(e);
     console.log(e.stack);
   }
@@ -48,16 +48,22 @@ function nextMiniGame (difficulty, totalScore) {
   var timeout = game.defaultTimeout || 10000;
   var gameEnd = game.end || never;
 
-  return Q(dom.$game)
-    .then(_.bind(game.enter, game))
+  dom.$help.innerHTML = game.message || "";
+
+  return Q()
+    .then(function(){
+      return Q.race([
+        Q.fcall(_.bind(game.enter, game), dom.$game),
+        waitNextCancel().then(function(e){ return Q.reject(new Error("cancelled")); })
+      ]);
+    })
     .then(function () {
       return Q.race([
         gameEnd
           .progress(function (score) {
-            console.log(score);
             stats.setScore(totalScore+score);
           }),
-        waitNextSubmitBeforeTimeout(timeout)
+        timeoutWithTicks(Q.race([gameEnd, waitNextCancel()]), timeout)
           .progress(stats.setTimeProgress)
           .then(_.bind(game.submit, game))
       ]);
@@ -68,16 +74,14 @@ function nextMiniGame (difficulty, totalScore) {
     });
 }
 
-function waitNextSubmitBeforeTimeout (time) {
-  return timeoutWithTicks(Q.fcall(waitNextSubmit), time);
+function waitNextCancel () {
+  return waitNextClick(dom.$cancel);
 }
 
-// Watch the Ok button submission once
-function waitNextSubmit () {
-  return waitNextClick(dom.$validate);
-}
-
-Qstart.delay(200).then(start).done();
+Q.all([
+  Qstart,
+  Q.all(_.map(Games, function (G) { return G.loaded || Q(); }))
+]).delay(200).then(start).done();
 
 window.Q = Q;
 window._ = _;

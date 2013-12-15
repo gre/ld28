@@ -1,4 +1,5 @@
 
 module.exports = [
-  require("./memo")
+  require("./memo"),
+  require("./cats")
 ];

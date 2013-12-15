@@ -6,11 +6,16 @@ body, html {
 }
 
 h1, h2, h3 {
-  font-weight: normal;
+  font-weight: bold;
 }
 
 header {
   text-align: center;
+  margin-bottom: 10px;
+}
+header h1 {
+  padding: 0;
+  margin: 0;
 }
 footer {
   margin-top: 10px;
@@ -23,7 +28,7 @@ footer a {
 }
 
 .title {
-  font-size: 1.4em;
+  font-size: 1.2em;
 }
 .title em {
   opacity: 0.2;
@@ -42,7 +47,7 @@ footer a {
 
 .intro .title {
   margin-bottom: 20px;
-  font-size: 2.8em;
+  font-size: 2.4em;
 }
 
 #container {
@@ -75,12 +80,6 @@ footer a {
   text-align: center;
 }
 
-#actions {
-  margin-top: 20px;
-  text-align: center;
-  z-index: 2;
-}
-
 button {
   font-size: 2em;
   font-weight: bold;
@@ -91,6 +90,7 @@ button {
   border-radius: 1em;
 }
 button:hover {
+  cursor: pointer;
   background: hsl(120, 80%, 65%);
   color: #fff;
   transform: translate(0px, 2px);
@@ -99,6 +99,50 @@ button:hover {
 }
 button:focus {
   outline: none;
+}
+button.red {
+  background: hsl(0, 80%, 65%);
+}
+button[disabled] {
+  background: hsl(0, 0%, 60%);
+}
+
+#buttons {
+  margin-top: 10px;
+  font-size: 0.5em;
+  text-align: center;
+}
+
+.g-cats {
+  position: relative;
+}
+.cathouse {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 400px;
+  width: 600px;
+  text-align: center;
+}
+
+.cathouse .house {
+  position: absolute;
+  left: 0;
+  z-index: 3;
+}
+.cathouse .cat {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
+}
+
+.cathouse .submit {
+  position: absolute;
+  bottom: 100px;
+  z-index: 4;
+  padding: 4px 8px;
+  border: 0.1em solid #fff;
 }
 
 .g-memo {
@@ -124,8 +168,14 @@ button:focus {
   opacity: 1;
 }
 
+#help {
+  text-align: center;
+  z-index: 0;
+  opacity: 0.2;
+  font-style: italic;
+}
+
 #stats {
-  margin-bottom: 10px;
   position: relative;
   width: 600px;
   height: 16px;

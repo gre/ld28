@@ -10,8 +10,9 @@ module.exports = {
   },
   $time: document.getElementById("time"),
   $container: document.getElementById("container"),
-  $validate: document.getElementById("validate"),
   $game: document.getElementById("game"),
   $title: document.querySelector("header > .title"),
-  $score: document.getElementById("score")
+  $score: document.getElementById("score"),
+  $cancel: document.getElementById("cancel"),
+  $help: document.getElementById("help")
 };

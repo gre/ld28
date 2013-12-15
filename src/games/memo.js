@@ -31,7 +31,13 @@ Card.prototype = {
     return Zanimo.transition(this.el, "transform", "translate("+x+"px, "+y+"px) scale("+scale+")", duration||0);
   },
   setVisibility: function (on) {
-    this.el.innerHTML = on ? this.number : "";
+    this.visible = on;
+    this.el.innerHTML = this.failed ? "✘" : on ? this.number : "";
+  },
+  setFailed: function (o) {
+    this.failed = true;
+    this.setVisibility(this.visible);
+    this.el.style.background = "hsl(0,0%,60%)";
   }
 };
 
@@ -87,6 +93,7 @@ function Memo (nbx, nby, total, invisibilityAfter) {
 }
 
 Memo.prototype = {
+  message: "Click the 1 !",
   onClick: function (e) {
     var target = e.target;
     if (target.className !== "card") return;
@@ -94,6 +101,7 @@ Memo.prototype = {
     var card = this.cards[index];
     if (!card || card.destroyed) return;
     if (card.number !== 1) {
+      card.setFailed(true);
       this.failures ++;
       return;
     }
@@ -105,7 +113,8 @@ Memo.prototype = {
   },
 
   score: function () {
-    return Math.max(0, 10 * this.clicks - 30 * this.failures);
+    var bonus = this.clicks === this.total && this.failures === 0 ? 50 : 0;
+    return Math.max(0, bonus + 10 * this.clicks - 20 * this.failures);
   },
 
   checkScore: function () {
@@ -125,7 +134,6 @@ Memo.prototype = {
   },
 
   enter: function (container) {
-    dom.opacity(dom.$validate, 0); // No needed in this game
     container.innerHTML = "";
     container.appendChild(this.el);
     var popAfterMax = 500;
@@ -170,7 +178,7 @@ Memo.prototype = {
           .then(function(){
             return card.transform(card.x, card.y, card.number === 1 ? 1 : 0.8, scaleDown);
           })
-          .delay(Math.floor(popAfterMax*Math.random()))
+          .delay(Math.floor((card.number===1 ? 500 : 0)+popAfterMax*Math.random()))
           .then(function () {
             var x = Math.round((Math.random()<0.5 ? -card.w/dimensions.width-dispersion*Math.random() : 1+dispersion*Math.random())*dimensions.width);
             var y = Math.round((Math.random()<0.5 ? -card.h/dimensions.height-dispersion*Math.random() : 1+dispersion*Math.random())*dimensions.height);
@@ -180,8 +188,7 @@ Memo.prototype = {
     }, this.cards, 100, 300, 500);
 
     return Q.delay(50)
-      .then(animation)
-      .then(_.partial(dom.opacity, dom.$validate, 1));
+      .then(animation);
   }
 };
 
