@@ -106,6 +106,19 @@ button.red {
 button[disabled] {
   background: hsl(0, 0%, 60%);
 }
+button.easy {
+  background: hsl(120, 80%, 60%);
+}
+button.medium {
+  background: hsl(180, 70%, 60%);
+}
+button.hard {
+  background: hsl(0, 80%, 65%);
+}
+
+.menu button {
+  margin: 0 10px;
+}
 
 #buttons {
   margin-top: 10px;
@@ -122,7 +135,6 @@ button[disabled] {
   left: 0;
   height: 400px;
   width: 600px;
-  text-align: center;
 }
 
 .cathouse .house {
@@ -137,12 +149,19 @@ button[disabled] {
   z-index: 2;
 }
 
-.cathouse .submit {
+.cathouse .buttons {
   position: absolute;
-  bottom: 100px;
+  width: 100%;
+  bottom: 30px;
+  left: 0;
+  text-align: center;
+}
+.cathouse .submit {
   z-index: 4;
   padding: 4px 8px;
   border: 0.1em solid #fff;
+  font-size: 1.2em;
+  word-wrap: nowrap;
 }
 
 .g-memo {
