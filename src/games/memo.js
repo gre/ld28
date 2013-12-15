@@ -94,7 +94,7 @@ function Memo (nbx, nby, total, invisibilityAfter) {
 }
 
 Memo.prototype = {
-  message: "Click the 1 !",
+  message: "Click the 1's",
   onClick: function (e) {
     var target = e.target;
     if (target.className !== "card") return;
